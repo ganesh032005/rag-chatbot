@@ -5,10 +5,10 @@ from rag_core import load_pdf, chunk_documents, store_embeddings, build_qa_chain
 
 app = FastAPI()
 
-# global chain
+
 chain = None
 
-# ── Add this function to rag_core.py too ──
+
 def load_existing_db():
     from langchain_community.embeddings import HuggingFaceEmbeddings
     from langchain_community.vectorstores import Chroma
@@ -16,7 +16,6 @@ def load_existing_db():
     db = Chroma(persist_directory="chroma_db", embedding_function=embeddings)
     return db
 
-# ── Route 1: Upload PDF ──────────────────────────────────
 @app.post("/upload")
 async def upload_pdf(file: UploadFile = File(...)):
     global chain
@@ -31,7 +30,6 @@ async def upload_pdf(file: UploadFile = File(...)):
 
     return {"status": "PDF processed", "filename": file.filename}
 
-# ── Route 2: Ask a question ──────────────────────────────
 class Question(BaseModel):
     question: str
 
@@ -39,13 +37,11 @@ class Question(BaseModel):
 async def ask_question(q: Question):
     global chain
     if chain is None:
-        # load from existing ChromaDB if already processed
         db    = load_existing_db()
         chain = build_qa_chain(db)
     answer = chain.invoke(q.question)
     return {"question": q.question, "answer": answer}
 
-# ── Route 3: Health check ────────────────────────────────
 @app.get("/")
 def root():
     return {"status": "RAG API is running"}

@@ -72,7 +72,7 @@ def ask(chain, question):
     return answer
 
 if __name__ == "__main__":
-    PDF_PATH = "data/machine-learning-cheat-sheet.pdf"  # ← your PDF name
+    PDF_PATH = "data/machine-learning-cheat-sheet.pdf" 
 
     pages  = load_pdf(PDF_PATH)
     chunks = chunk_documents(pages)
